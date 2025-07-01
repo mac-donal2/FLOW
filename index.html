@@ -1,0 +1,308 @@
+
+<html>
+<head>
+	<title>IPTV TV por Internet Servidor CVATT</title>
+	<meta name="robots" content="NOINDEX, NOFOLLOW">
+	<meta content='width=device-width, initial-scale=1' name='viewport'>	
+	<meta http-equiv="Content-Language" content="es" />	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
+
+</head>
+<link rel="shortcut icon" href="/iptv logo.png" />
+
+<video autoplay="autoplay" id="video_background" preload="auto" volume="100"/>
+  <source src="intro.mp4" type="video/mp4" />
+	</video/>
+
+<style>
+body {
+	background-size: 100vw 100vh;
+	overflow: hidden;
+	background-color: black;
+	padding: 0%;
+	padding-top 0%;
+	margin: 0%;
+	height: 100%;
+	width: 100%;
+	
+}
+
+
+
+#boton-inicio {
+	z-index: 5;
+	background: rgba(0,0,0, 0.5);
+	border: none;
+	border-radius: 0.31em;
+	padding: 0.93em 1.87em;
+	color: #fff;
+	margin-right: 1.25em;
+	cursor: pointer;
+	transition: .3s ease all;
+	font-size: 1.12em;
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: fit-content;
+	top: 3%;
+	right: 0.2%;
+
+}
+
+#boton-inicio:hover {
+	background: #fff;
+	color: #000;
+}
+
+#reproductor {
+	display: flex;
+	flex-flow: column wrap;
+	align-items: stretch;
+	justify-content: stretch;
+	width: 100%;
+	
+}
+
+iframe {
+	z-index: 2;
+	position: absolute;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	width: 100%;
+	height: 100%;
+	
+	
+}
+
+#canal-ahora {
+	z-index: 3;
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: fit-content;
+	color: white;
+	opacity: 0.8;
+	font-size: 30px;
+	font-weight: 700;
+	font-family: arial;
+	padding-top: 0%;
+	top: 0%;
+	left: 30%;
+	right: 30%;
+	text-shadow:
+    2px 2px 3px black,
+    0 0 6em black,
+    0 0 0.1em black;
+	0 0 0.1em black;
+  
+  
+}
+
+
+.icono {
+	width: 300px;
+	height: 120px;
+	overflow: auto;
+	
+	
+}
+
+.borde {
+	cursor:pointer;
+	border-radius: 0%;
+	border: 5px solid rgba(0,0,0,0);
+	opacity:  0.6;
+}
+
+.borde:hover {
+	cursor:pointer;
+	border: 5px solid rgba(0,0,0,0);
+	transform: scale(1.08);
+	background-image: url("square.png");
+	opacity:  1;
+	
+}
+
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	padding-top: 1%;
+	grid-gap: 60px;
+  
+}
+
+#video_background {
+position: absolute;
+bottom: 0px;
+right: 0px;
+min-width: 100%;
+min-height: 100%;
+width: 1080px;
+height: 720px;
+z-index: -1000;
+overflow: hidden;
+}
+#video_pattern {
+background:#fff;
+position: fixed;
+opacity: 0.8;
+left: 0px;
+top: 0px;
+width: 100%;
+height: 100%;
+z-index: 1;
+}
+
+	
+#canales {
+	
+	z-index: 4;
+	position: absolute;
+	width: 20px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	flex: 200px;
+	flex-flow: row wrap;
+	overflow: auto;
+	overflow-x: hidden;
+	scrollbar-color: black rgba(0,0,0,0.2);
+	scrollbar-width: auto;top:  0%;
+	left: 0%;
+	top: 0%;
+	bottom: 0%;
+	direction: rtl;
+	opacity: .7;
+    transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -webkit-transition: opacity 1s ease-in-out;
+
+	
+}
+
+#canales:hover {
+	background-color: rgba(0,0,0,0.15);
+	z-index: 4;
+	position: absolute;
+	width: 350px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	flex: 200px;
+	flex-flow: row wrap;
+	overflow: auto;
+	overflow-x: hidden;
+	scrollbar-color: black rgba(0,0,0,.2);
+	scrollbar-width: thin;top:  0%;
+	left:0%;
+	top: 0%;
+	bottom: 0%;
+	direction: rtl;
+	opacity: 1;
+    transition: opacity .65s ease-in-out;
+    -moz-transition: opacity .65s ease-in-out;
+    -webkit-transition: opacity .65s ease-in-out;
+		
+
+}
+
+body, ::backdrop {
+    background-image: url("cargando.png");
+}
+
+
+	
+</style>
+<script>
+
+function getTimestampInSeconds () {
+  return Math.floor(Date.now() / 1000)
+}
+
+document.addEventListener("contextmenu", (ev) => {
+	ev.preventDefault();
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+
+	
+	let canales = document.getElementById("canales");
+	let reproductor = document.getElementById("iframe");
+	let canal_ahora = document.getElementById("canal-ahora");
+	let iframe = document.getElementById("iframe");
+	
+	let scrollBy = 200;
+	/*
+	let abajo = document.getElementById("abajo");
+	abajo.addEventListener("click", () => {
+		let options = {top: scrollBy, left: 0, behavior: "smooth"};
+		canales.scrollBy(options);
+	});
+	
+	let arriba = document.getElementById("arriba");
+	arriba.addEventListener("click", () => {
+		let options = {top: -scrollBy, left: 0, behavior: "smooth"};
+		canales.scrollBy(options);
+	});
+	*/
+	
+	fetch("https://raw.githubusercontent.com/galvanoteca2001/FLOW/refs/heads/main/cvatt.csv?" + getTimestampInSeconds())
+	.then(response => response.text())
+	.then(data => {
+		let lines = data.split("\n");
+		for (let i = 0; i < lines.length; ++i) {
+			let line = lines[i];
+			if (line !== "") {
+				let parts = line.split(",");
+				let name = parts[0];
+				let image_path = "" + parts[1];
+				let video_url = parts[2];
+				let img = document.createElement("img");
+				img.setAttribute("src", image_path);
+				img.setAttribute("class", "icono borde");
+				img.addEventListener("click", () => {
+					reproductor.setAttribute("src", video_url);
+					console.log(name);
+					canal_ahora.innerText = name;
+					
+				});
+				canales.appendChild(img);
+			}
+		}
+	});
+});
+
+</script>
+</head>
+
+<body>
+
+<div id="canales"></div>
+
+<div id="reproductor">
+
+<div> <p id="canal-ahora"></p> </div>
+
+
+<button role="button" id="boton-inicio" onclick="window.location='https://galvanoteca2001.github.io/embedflow/index.html'"></i>Inicio</button>
+
+<iframe style="overflow: fit-content; display: flex; border: 1px solid #424949;" name="iframe" id="iframe"   autoplay="true" loop="true" scrolling="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen="true"  src="">
+</iframe>
+
+<!--
+<div class="">
+    <img id="abajo" src="canal-.png" class="borde-arriba-abajo" width="180" height="70">
+      
+	<img id="arriba" src="canal+.png" class="borde-arriba-abajo" width="180" height="70">
+</div>
+-->
+</div>
+
+
+
+
+</body></html>
